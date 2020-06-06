@@ -18,8 +18,7 @@ new Vue({
             self.chatContent += '<div class="chip">'
                     + '<img src="https://robohash.org/' + msg.username + '?size=32x32" alt="">' // Avatar
                     + msg.username
-                + '</div>'
-                + emojione.toImage(msg.message) + '<br/>'; // Parse emojis
+                + '</div>' + msg.message + '<br/>';
 
             var element = document.getElementById('chat-messages');
             element.scrollTop = element.scrollHeight; // Auto scroll to the bottom
