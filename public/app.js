@@ -11,28 +11,31 @@ new Vue({
     },
 
     created: function() {
-        var self = this;
-        this.ws = new WebSocket('ws://' + window.location.host + '/ws');
-        this.ws.addEventListener('message', function(e) {
-            var msg = JSON.parse(e.data);
-            self.chatContent += '<div class="chip">'
-                    + '<img src="https://robohash.org/' + msg.username + '?size=32x32" alt="">' // Avatar
-                    + msg.username
-                + '</div>' + msg.message + '<br/>';
-
-            var element = document.getElementById('chat-messages');
-            element.scrollTop = element.scrollHeight; // Auto scroll to the bottom
-        });
+        this.init();
     },
 
     methods: {
+        init: function() {
+            this.ws = new WebSocket('ws://' + window.location.host + '/ws');
+            this.ws.addEventListener('message', (e) =>  {
+                const msg = JSON.parse(e.data);
+                this.chatContent += `<div class="chip">
+                                        <img src="https://robohash.org/' + msg.username + '?size=32x32" alt="">
+                                        ${msg.username}
+                                      </div>
+                                        ${msg.messages}<br/>`;
+
+                const element = document.getElementById('chat-messages');
+                element.scrollTop = element.scrollHeight; // Auto scroll to the bottom
+            });
+        },
         send: function () {
             if (this.newMsg !== '') {
                 this.ws.send(
                     JSON.stringify({
                         email: this.email,
                         username: this.username,
-                        message: this.newMsg.replace(/<(?:.|\n)*?>/gm, '')// Strip out html
+                        messages: this.newMsg.replace(/<(?:.|\n)*?>/gm, '')// Strip out html
                     }
                 ));
                 this.newMsg = ''; // Reset newMsg
